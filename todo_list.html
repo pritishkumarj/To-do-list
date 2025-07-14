@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO LIST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #2f363e;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .box {
+            position: relative;
+            padding: 30px 40px;
+            width: 100%;
+            max-height: 80vh;
+            border-radius: 25px;
+            background: #2f363e;
+            box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.25),
+                        10px 10px 70px rgba(0, 0, 0, 0.25),
+                        inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+                        inset 5px 5px 20px rgba(255, 255, 255, 0.2),
+                        inset -5px -5px 15px rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            width: 100%;
+            text-shadow: 5px 6px 12px rgba(0, 0, 0, 0.995);
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        #input8x {
+            width: 100%;
+            font-size: 16px;
+            font-weight: 200;
+            border: none;
+            outline: none;
+            padding: 20px 25px;
+            border-radius: 50px;
+            background: #2f363e;
+            color: white;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25),
+                        inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+                        inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        #input8x::placeholder {
+            color: #888;
+        }
+
+        .add-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1f83f2;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #0d6efd;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .list-container {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 10px;
+        }
+
+        .list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .list-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+
+        .list-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 10px;
+        }
+
+        .list-container::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+
+        #list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .list-item {
+            position: relative;
+            font-size: 16px;
+            font-weight: 200;
+            display: flex;
+            align-items: center;
+            background: #1f83f2;
+            margin: 15px 0;
+            padding: 15px 60px 15px 20px;
+            min-height: 50px;
+            border-radius: 25px;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25),
+                        inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+                        inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            color: aliceblue;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .list-item:hover {
+            transform: translateX(5px);
+        }
+
+        .list-item.done {
+            background: rgb(92, 92, 92);
+            color: #ccc;
+            text-decoration: line-through;
+        }
+
+        .list-item.done:hover {
+            transform: translateX(2px);
+        }
+
+        .delete-btn {
+            position: absolute;
+            width: 35px;
+            right: 10px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ff2c74;
+            border-radius: 50%;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25),
+                        inset 2px 2px 5px rgba(225, 225, 225, 0.522),
+                        inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #e91e63;
+            transform: scale(1.1);
+        }
+
+        .delete-btn::before {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 2px;
+            background: white;
+            transform: rotate(45deg);
+        }
+
+        .delete-btn::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 2px;
+            background: white;
+            transform: rotate(-45deg);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            margin-top: 50px;
+        }
+
+        .task-counter {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .box {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .list-item {
+                font-size: 14px;
+                padding: 12px 50px 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <h2>TO DO LIST</h2>
+            <div class="input-container">
+                <input type="text" placeholder="Add a new task..." id="input8x">
+                <button class="add-btn" onclick="addItemFromButton()">+</button>
+            </div>
+            <div class="list-container">
+                <ul id="list"></ul>
+                <div id="empty-state" class="empty-state">No tasks yet. Add one above!</div>
+            </div>
+            <div class="task-counter" id="task-counter">0 tasks</div>
+        </div>
+    </div>
+
+    <script>
+        window.alert("Welcome to your TO DO LIST!");
+        
+        let input8x = document.querySelector('#input8x');
+        let list = document.querySelector('#list');
+        let emptyState = document.querySelector('#empty-state');
+        let taskCounter = document.querySelector('#task-counter');
+        let taskCount = 0;
+
+        // Add event listener for Enter key
+        input8x.addEventListener('keyup', function(event) {
+            if (event.key === "Enter") {
+                addItemFromInput();
+            }
+        });
+
+        // Function to add item from input
+        function addItemFromInput() {
+            const inputValue = input8x.value.trim();
+            if (inputValue !== "") {
+                addItem(inputValue);
+                input8x.value = "";
+            } else {
+                alert("Please enter a task!");
+            }
+        }
+
+        // Function to add item from button
+        function addItemFromButton() {
+            addItemFromInput();
+        }
+
+        // Function to add item to the list
+        function addItem(inputValue) {
+            let listItem = document.createElement("li");
+            listItem.className = "list-item";
+            listItem.innerHTML = `
+                <span class="task-text">${inputValue}</span>
+                <div class="delete-btn" onclick="deleteItem(this)"></div>
+            `;
+            
+            // Add click event to toggle done state (but not on delete button)
+            listItem.addEventListener("click", function(e) {
+                if (!e.target.classList.contains('delete-btn')) {
+                    this.classList.toggle('done');
+                }
+            });
+            
+            list.appendChild(listItem);
+            taskCount++;
+            updateUI();
+        }
+
+        // Function to delete item
+        function deleteItem(deleteBtn) {
+            const listItem = deleteBtn.parentElement;
+            listItem.remove();
+            taskCount--;
+            updateUI();
+        }
+
+        // Function to update UI elements
+        function updateUI() {
+            // Update task counter
+            taskCounter.textContent = `${taskCount} task${taskCount !== 1 ? 's' : ''}`;
+            
+            // Show/hide empty state
+            if (taskCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html>
